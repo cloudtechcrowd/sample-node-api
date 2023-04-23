@@ -5,7 +5,10 @@ const bcrypt = require('bcryptjs')
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:4200'],
+    optionSuccessStatus: 200, credentials: true
+}));
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://samplebd:sample123@cluster0.jx8ceng.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true });
@@ -47,9 +50,9 @@ app.post('/api/register', async (req, res) => {
             gender
         });
 
-        await newUser.save();
+        const savedUser = await newUser.save();
 
-        return res.status(201).json({ message: 'User created' });
+        return res.status(201).json(savedUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
@@ -71,7 +74,7 @@ app.post('/api/login', async (req, res) => {
         }
 
         const token = jwt.sign({ email }, 'secretkey');
-        return res.status(200).json({ token });
+        return res.status(200).json(token);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
@@ -83,7 +86,7 @@ const jwt = require('jsonwebtoken');
 app.get('/api/users', async (req, res) => {
     try {
         const users = await User.find();
-        return res.status(200).json({ users });
+        return res.status(200).json(users);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
@@ -97,7 +100,7 @@ app.get('/api/users/:id', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        return res.status(200).json({ user });
+        return res.status(200).json(user);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
@@ -121,9 +124,9 @@ app.post('/api/users', async (req, res) => {
             gender
         });
 
-        await newUser.save();
+        const savedUser = await newUser.save();
 
-        return res.status(201).json({ message: 'User created' });
+        return res.status(201).json(savedUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
@@ -146,9 +149,9 @@ app.put('/api/users/:id', async (req, res) => {
             user.password = await bcrypt.hash(password, 10);
         }
 
-        await user.save();
+        const updatedUser = await user.save();
 
-        return res.status(200).json({ message: 'User updated' });
+        return res.status(200).json(updatedUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
@@ -162,9 +165,9 @@ app.delete('/api/users/:id', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        await User.findByIdAndDelete(req.params.id);
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
 
-        return res.status(200).json({ message: 'User deleted' });
+        return res.status(200).json(deletedUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
