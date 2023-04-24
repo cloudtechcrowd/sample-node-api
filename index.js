@@ -5,10 +5,7 @@ const bcrypt = require('bcryptjs')
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors({
-    origin: ['*', 'http://localhost:4200'],
-    optionSuccessStatus: 200, credentials: true
-}));
+app.use(cors());
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://samplebd:sample123@cluster0.jx8ceng.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true });
