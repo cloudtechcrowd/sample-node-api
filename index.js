@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 const app = express();
 app.use(bodyParser.json());
 app.use(cors({
-    origin: ['http://localhost:4200'],
+    origin: ['*', 'http://localhost:4200'],
     optionSuccessStatus: 200, credentials: true
 }));
 
